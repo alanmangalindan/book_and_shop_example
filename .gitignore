@@ -1,0 +1,17 @@
+# Add any directories, files, or patterns you don't want to be tracked by version control
+node_modules/
+public/images/
+public/uploads/
+**/.DS_Store
+blog-db.db
+*.db
+
+/log/*.log
+/tmp
+.DS_Store
+.idea/
+.sass-cache
+*~
+node_modules
+*.out
+oauth.js
