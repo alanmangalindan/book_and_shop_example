@@ -49,3 +49,36 @@ var auth = require('./authentication.js');
 auth.initialize(app);
 auth.setupLogin("/login", "/orderHistory", "/login?loginFail=true");
 auth.setupLogout("/logout", "/animals?loggedOut=true");
+
+//--------------------- ROUTE HANDLERS -------------------------------------------
+
+app.get('/', function (req, res) {
+
+    res.render('home', data);
+});
+
+
+
+// Serve files form "/public" folder
+app.use(express.static(__dirname + "/public"));
+
+// --------------------------------------------------------------------------
+
+// 404 page
+app.use(function (req, res) {
+    res.type('text/html');
+    res.status(404);
+    res.send('Page not found. <a href="/">Click here</a> to return to the homepage.');
+});
+
+// 500 page
+app.use(function (req, res) {
+    res.type('text/html');
+    res.status(500);
+    res.send("500 Internal Server Error. <a href=" / ">Click here</a> to return to the homepage.");
+});
+
+// Start the server running.
+app.listen(app.get('port'), function () {
+    console.log('Express started on http://localhost:' + app.get('port'));
+});
