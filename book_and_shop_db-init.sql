@@ -26,6 +26,6 @@ create table Bookings (
     notes text,
     primary key (profId, bookingDate, bookingTime),
     foreign key (bookedBy) references Users (username),
-    foreign key (profId) references Articles (profId)
+    foreign key (profId) references Professionals (profId)
 );
 
