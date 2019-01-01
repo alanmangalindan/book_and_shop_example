@@ -53,6 +53,10 @@ app.get('/', function (req, res) {
     res.render('home');
 });
 
+app.get('/signup', function (req, res) {
+
+    res.render('signup');
+});
 
 
 // Serve files form "/public" folder
