@@ -105,12 +105,26 @@ app.post('/signup', function (req, res) {
 
 auth.get('/login', '/', function (req, res) {
     var data = {
-        loginFail: req.query.loginFail
+        loginFail: req.query.loginFail,
+        loginFirst: req.query.loginFirst
     }
     res.render('login', data);
 });
 
+auth.get('/userDetails', function (req, res) {
 
+    dao.getUser(req.user.username, function (user) {
+        var data = {
+            userData: user
+        }
+        res.render('userDetails', data);
+    });
+}, '/login?loginFirst=true');
+
+// auth.get('/book', function (req, res) {
+
+    
+// }, '/login?loginFirst=true')
 
 // Serve files from "/public" folder
 app.use(express.static(__dirname + "/public"));
