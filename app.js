@@ -73,8 +73,22 @@ app.post('/signup', function (req, res) {
         res.redirect('/signup?passwordFail=true');
     } else {
         delete req.session.partialUserData;
-        passport.authenticate('local')(req, res, function () {
-            res.redirect('/');
+
+        bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
+            var newUser = {
+                fname: req.body.fname,
+                lname: req.body.lname,
+                username: req.body.username,
+                password: hash,
+                activeFlag: req.body.activeFlag
+            }
+            dao.createUser(newUser, function (err, user) {
+                passport.authenticate('local')(req, res, function () {
+                    res.redirect('/');
+
+                });
+
+            });
         });
     }
 });
