@@ -123,8 +123,17 @@ auth.get('/userDetails', function (req, res) {
 
 auth.get('/book', function (req, res) {
 
-    res.render('book', data);
-    
+    dao.getAllProfessionals(function (professionals) {
+
+        dao.getTimeSelection(function (timeSelection) {
+            var data = {
+                prof: professionals,
+                timeSelection: timeSelection
+            }
+            res.render('book', data);
+        });
+    });
+
 }, '/login?loginFirst=true')
 
 // Serve files from "/public" folder

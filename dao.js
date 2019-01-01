@@ -37,6 +37,31 @@ module.exports.createUser = function (u, callback) {
 
 }
 
+//----------------------Queries relating to Professionals---------------------------
+module.exports.getAllProfessionals = function (callback) {
+    db.all("select * from Professionals", function (err, rows) {
+        if (rows.length > 0) {
+            console.log(rows.length + " row(s) retrieved from Professionals table.");
+            callback(rows);
+        } else {
+            console.log(rows.length + " row(s) retrieved from Professionals table.");
+            callback(null);
+        };
+    });
+}
+
+
+module.exports.getTimeSelection = function (callback) {
+    db.all("select * from TimeSelection", function (err, rows) {
+        if (rows.length > 0) {
+            console.log(rows.length + " row(s) retrieved from TimeSelection table.");
+            callback(rows);
+        } else {
+            console.log(rows.length + " row(s) retrieved from TimeSelection table.");
+            callback(null);
+        };
+    });
+}
 // module.exports.updateUser = function (u, callback) {
 //     db.run("update Users set password = ?, dob = ?, country = ?, avatar = ?, fname = ?, lname = ?, activeFlag = ?, description = ? where username = ?", [u.password, u.dob, u.country, u.avatar, u.fname, u.lname, u.activeFlag, u.description, u.username], function (err) {
 //         if (err) {
