@@ -121,10 +121,11 @@ auth.get('/userDetails', function (req, res) {
     });
 }, '/login?loginFirst=true');
 
-// auth.get('/book', function (req, res) {
+auth.get('/book', function (req, res) {
 
+    res.render('book', data);
     
-// }, '/login?loginFirst=true')
+}, '/login?loginFirst=true')
 
 // Serve files from "/public" folder
 app.use(express.static(__dirname + "/public"));
