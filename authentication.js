@@ -1,5 +1,9 @@
 var dao = require('./dao.js');
 
+// Set up password hashing
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 // Passport setup code
 // --------------------------------------------------------------------------
 
@@ -17,15 +21,21 @@ var localStrategy = new LocalStrategy(
             // If the user doesn't exist...
             if (!user) {
                 return done(null, false, { message: 'Invalid user' });
-            };
+            }
 
-            // If the user's password doesn't match the typed password...
-            if (user.password !== password) {
-                return done(null, false, { message: 'Invalid password' });
-            };
+            var retrievedHash = user.password;
 
-            // If we get here, everything's OK.
-            done(null, user);
+            bcrypt.compare(password, retrievedHash, function (err, res) {
+
+                // If the user's password doesn't match the typed password...
+                if (!res) {
+                    return done(null, false, { message: 'Invalid password' });
+                } else {
+
+                    // If we get here, the user can be logged in.
+                    done(null, user);
+                }
+            });
 
         });
     }

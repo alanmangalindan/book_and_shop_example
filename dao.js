@@ -37,33 +37,33 @@ module.exports.createUser = function (u, callback) {
 
 }
 
-module.exports.updateUser = function (u, callback) {
-    db.run("update Users set password = ?, dob = ?, country = ?, avatar = ?, fname = ?, lname = ?, activeFlag = ?, description = ? where username = ?", [u.password, u.dob, u.country, u.avatar, u.fname, u.lname, u.activeFlag, u.description, u.username], function (err) {
-        if (err) {
-            console.log(err);
-        }
-        console.log(this.changes + " row(s) affected in Users table.");
-        callback();
-    });
+// module.exports.updateUser = function (u, callback) {
+//     db.run("update Users set password = ?, dob = ?, country = ?, avatar = ?, fname = ?, lname = ?, activeFlag = ?, description = ? where username = ?", [u.password, u.dob, u.country, u.avatar, u.fname, u.lname, u.activeFlag, u.description, u.username], function (err) {
+//         if (err) {
+//             console.log(err);
+//         }
+//         console.log(this.changes + " row(s) affected in Users table.");
+//         callback();
+//     });
 
-}
+// }
 
-module.exports.getAllUsernames = function (callback) {
-    db.all("select username from Users", function (err, rows) {
-        if (rows.length > 0) {
-            callback(rows);
-        } else {
-            callback(null);
-        };
-    });
-}
+// module.exports.getAllUsernames = function (callback) {
+//     db.all("select username from Users", function (err, rows) {
+//         if (rows.length > 0) {
+//             callback(rows);
+//         } else {
+//             callback(null);
+//         };
+//     });
+// }
 
-module.exports.deleteUser = function (u, callback) {
-    db.run("update Users set activeFlag = 0 where username = ?", [u], function (err) {
-        if (err) {
-            console.log(err);
-        }
-        console.log(this.changes + " row(s) affected in Users table.");
-        callback();
-    });
-}
+// module.exports.deleteUser = function (u, callback) {
+//     db.run("update Users set activeFlag = 0 where username = ?", [u], function (err) {
+//         if (err) {
+//             console.log(err);
+//         }
+//         console.log(this.changes + " row(s) affected in Users table.");
+//         callback();
+//     });
+// }

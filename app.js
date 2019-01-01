@@ -27,30 +27,39 @@ app.use(session({
     secret: "aSampleWebsiteWithBookingAndShopping"
 }));
 
-// Set up password hashing
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
-const myPlaintextPassword = 's0/\/\P4$$w0rD';
-const someOtherPlaintextPassword = 'not_bacon';
-
-
 // require formidable for handling audio/video uploads
 var formidable = require("formidable");
 
 //import external DAO module which contains the database access statements
 var dao = require('./dao.js');
 
-// Custom module for authentication stuff
-// var auth = require('./authentication.js');
-// auth.initialize(app);
-// auth.setupLogin("/login", "/orderHistory", "/login?loginFail=true");
-// auth.setupLogout("/logout", "/animals?loggedOut=true");
+// Custom module for authentication
+var auth = require('./authentication.js');
+auth.initialize(app);
+auth.setupLogin("/login", "/", "/login?loginFail=true");
+auth.setupLogout("/logout", "/?loggedOut=true");
 
 //--------------------- ROUTE HANDLERS -------------------------------------------
 
 app.get('/', function (req, res) {
 
-    res.render('home');
+    if (req.isAuthenticated()) {
+
+        dao.getUser(req.user.username, function (user) {
+            var data = {
+                userData: user
+            }
+            res.render('home', data);
+        });
+
+    } else {
+
+        var data = {
+            loggedOut: req.query.loggedOut
+        }
+
+        res.render('home', data);
+    }
 });
 
 app.get('/signup', function (req, res) {
@@ -58,7 +67,8 @@ app.get('/signup', function (req, res) {
     var data = {
         passwordFail: req.query.passwordFail,
         userData: req.session.partialUserData,
-    }
+    };
+
 
     res.render('signup', data);
 });
@@ -93,7 +103,16 @@ app.post('/signup', function (req, res) {
     }
 });
 
-// Serve files form "/public" folder
+auth.get('/login', '/', function (req, res) {
+    var data = {
+        loginFail: req.query.loginFail
+    }
+    res.render('login', data);
+});
+
+
+
+// Serve files from "/public" folder
 app.use(express.static(__dirname + "/public"));
 
 // --------------------------------------------------------------------------

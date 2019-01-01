@@ -1,0 +1,58 @@
+<div class="row mt-4">
+    <div class="col-md">
+        <div class="card bg-light mb-3">
+            <div class="card-header">No account yet? Click <a href="/signup">here</a> to sign up.</div>
+        </div>
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-md">
+        <div class="card bg-light mb-3">
+            <div class="card-header">Login with your Google or Facebook account</div>
+            <div class="card-body">
+                <a href="/auth/google" class="btn btn-danger">Login via Google</a>
+                <a href="/auth/facebook" class="btn btn-primary">Login via Facebook</a>
+                <small class="form-text text-muted">MediBook will never post anything on your social media account.</small>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-md">
+        <div class="card bg-light mb-3">
+            <div class="card-header">Login with MediBook</div>
+            <div class="card-body">
+                <form action="/login" method="POST">
+                    <div class="form-group row">
+                        <label for="username" class="col-sm-2 col-form-label">Email</label>
+                        <div class="col-sm-10">
+                            <input type="email" class="form-control" id="username" placeholder="name@example.co.nz"
+                                name="username" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="password" class="col-sm-2 col-form-label">Password</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                    </div>
+                    
+                    {{#if loginFail}}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        You could not be logged in with that username or password.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {{/if}}
+                    <div class="form-group row float-right">
+                        <div class="col-sm-10">
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
