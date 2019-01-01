@@ -55,9 +55,29 @@ app.get('/', function (req, res) {
 
 app.get('/signup', function (req, res) {
 
-    res.render('signup');
+    var data = {
+        passwordFail: req.query.passwordFail,
+        userData: req.session.partialUserData,
+    }
+
+    res.render('signup', data);
 });
 
+app.post('/signup', function (req, res) {
+    if (req.body.password != req.body.passwordCheck) {
+        req.session.partialUserData = {
+            fname: req.body.fname,
+            lname: req.body.lname,
+            username: req.body.username
+        }
+        res.redirect('/signup?passwordFail=true');
+    } else {
+        delete req.session.partialUserData;
+        passport.authenticate('local')(req, res, function () {
+            res.redirect('/');
+        });
+    }
+});
 
 // Serve files form "/public" folder
 app.use(express.static(__dirname + "/public"));
