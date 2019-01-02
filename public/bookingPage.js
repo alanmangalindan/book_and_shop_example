@@ -7,7 +7,6 @@ function getProfDetails(professionalId) {
     $.get("/getProfDetails/" + professionalId, function (data, status) {
 
         var profDetails = JSON.parse(data);
-        console.log(profDetails);
         $('#location').val(profDetails.location);
         $('#specialty').val(profDetails.specialty);
 

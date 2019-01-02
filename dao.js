@@ -63,6 +63,7 @@ module.exports.getProfDetails = function (id, callback) {
 }
 
 
+//----------------------Queries relating to Bookings---------------------------
 module.exports.getTimeSelection = function (callback) {
     db.all("select * from TimeSelection", function (err, rows) {
         if (rows.length > 0) {
@@ -74,6 +75,19 @@ module.exports.getTimeSelection = function (callback) {
         };
     });
 }
+
+module.exports.createBooking = function (booking, callback) {
+    db.run("insert into Bookings values (?, ?, ?, ?, ?, ?)", [booking.bookedBy, booking.profId, booking.bookingDate, booking.bookingTime, booking.location, booking.notes], function (err) {
+        if (err) {
+            console.log(err);
+        }
+    
+        console.log(this.changes + " row(s) inserted in Bookings table.");
+
+        callback();
+    });
+}
+
 // module.exports.updateUser = function (u, callback) {
 //     db.run("update Users set password = ?, dob = ?, country = ?, avatar = ?, fname = ?, lname = ?, activeFlag = ?, description = ? where username = ?", [u.password, u.dob, u.country, u.avatar, u.fname, u.lname, u.activeFlag, u.description, u.username], function (err) {
 //         if (err) {

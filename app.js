@@ -141,9 +141,20 @@ auth.get('/book', function (req, res) {
 }, '/login?loginFirst=true');
 
 // submit booking and write to database
-auth.post('/book', function (req, res) {
+// auth.post('/book', function (req, res) {
 
-}, '/login?loginFirst=true')
+//     var newBooking = {
+//         bookedBy: req.user.username,
+//         profId: req.body.profId,
+//         bookingDate: req.body.date,
+//         bookingTime: req.body.time,
+//         location: req.body.location,
+//         notes: req.body.notes
+//     }
+
+//     dao.createBooking
+
+// }, '/login?loginFirst=true')
 
 
 // ajax call to display professional's details when selected from drop down
