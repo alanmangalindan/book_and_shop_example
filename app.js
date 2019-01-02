@@ -130,36 +130,42 @@ auth.get('/book', function (req, res) {
     dao.getAllProfessionals(function (professionals) {
 
         dao.getTimeSelection(function (timeSelection) {
-            var data = {
-                prof: professionals,
-                timeSelection: timeSelection
-            }
-            res.render('book', data);
+
+            dao.getBookingsForUser(req.user.username, function (userBookings) {
+                var data = {
+                    prof: professionals,
+                    timeSelection: timeSelection,
+                    userBookings: userBookings,
+                    bookingCreated: req.query.bookingCreated
+                }
+                res.render('book', data);
+            });
         });
     });
 
 }, '/login?loginFirst=true');
 
 // submit booking and write to database
-// auth.post('/book', function (req, res) {
+auth.post('/book', function (req, res) {
 
-//     var newBooking = {
-//         bookedBy: req.user.username,
-//         profId: req.body.profId,
-//         bookingDate: req.body.date,
-//         bookingTime: req.body.time,
-//         location: req.body.location,
-//         notes: req.body.notes
-//     }
+    var newBooking = {
+        bookedBy: req.user.username,
+        profId: req.body.profId,
+        bookingDate: req.body.date,
+        bookingTime: req.body.time,
+        location: req.body.location,
+        notes: req.body.notes
+    }
 
-//     dao.createBooking
+    dao.createBooking(newBooking, function () {
+        res.redirect('/book?bookingCreated=true');
+    })
 
-// }, '/login?loginFirst=true')
+}, '/login?loginFirst=true')
 
 
 // ajax call to display professional's details when selected from drop down
 auth.get("/getProfDetails/:id", function (req, res) {
-    console.log('req.params.id: ' + req.params.id);
     dao.getProfDetails(req.params.id, function (profDetails) {
         res.status(200);
         res.type("text/plain");

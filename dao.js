@@ -46,7 +46,7 @@ module.exports.getAllProfessionals = function (callback) {
         } else {
             console.log(rows.length + " row(s) retrieved from Professionals table.");
             callback(null);
-        };
+        }
     });
 }
 
@@ -58,7 +58,7 @@ module.exports.getProfDetails = function (id, callback) {
         } else {
             console.log(rows.length + " row(s) retrieved from Professionals table.");
             callback(null);
-        };
+        }
     });
 }
 
@@ -72,7 +72,7 @@ module.exports.getTimeSelection = function (callback) {
         } else {
             console.log(rows.length + " row(s) retrieved from TimeSelection table.");
             callback(null);
-        };
+        }
     });
 }
 
@@ -81,10 +81,19 @@ module.exports.createBooking = function (booking, callback) {
         if (err) {
             console.log(err);
         }
-    
+
         console.log(this.changes + " row(s) inserted in Bookings table.");
 
         callback();
+    });
+}
+
+module.exports.getBookingsForUser = function (username, callback) {
+    db.all("select * from Bookings where bookedBy = ?", [username], function (err, rows) {
+        if (err) {
+            console.log(err);
+        }
+        callback(rows);
     });
 }
 
