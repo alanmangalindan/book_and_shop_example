@@ -60,9 +60,8 @@
     <div class="col-md-8">
         <div class="card bg-light mb-3">
             <div class="card-header">Bookings for Selected Professional</div>
-            <div class="card-body">
-                {{!-- <h5 class="card-title">Light card title</h5> --}}
-                <p class="card-text">Bookings here...</p>
+            <div class="card-body" id="profBookings">
+                <p class="card-text">No bookings found for selected professional.</p>
             </div>
         </div>
         <div class="card bg-light mb-3">
@@ -81,7 +80,7 @@
                     <tbody>
                         {{#each userBookings}}
                         <tr>
-                            <td>{{profId}}</td>
+                            <td><a href="/editBooking/{{bookingId}}">{{fname}} {{lname}}</a></td>
                             <td>{{bookingDate}}</td>
                             <td>{{bookingTime}}</td>
                             <td>{{location}}</td>

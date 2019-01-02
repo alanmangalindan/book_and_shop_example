@@ -18,13 +18,13 @@ create table Professionals (
 );
 
 create table Bookings (
+    bookingId integer not null primary key autoincrement,
     bookedBy varchar(50) not null,
     profId integer not null,
     bookingDate date,
     bookingTime time,
     location varchar(50),
     notes text,
-    primary key (profId, bookingDate, bookingTime),
     foreign key (bookedBy) references Users (username),
     foreign key (profId) references Professionals (profId)
 );

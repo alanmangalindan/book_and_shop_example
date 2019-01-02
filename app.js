@@ -136,6 +136,7 @@ auth.get('/book', function (req, res) {
                     prof: professionals,
                     timeSelection: timeSelection,
                     userBookings: userBookings,
+                    userData: req.user,
                     bookingCreated: req.query.bookingCreated
                 }
                 res.render('book', data);
@@ -170,6 +171,15 @@ auth.get("/getProfDetails/:id", function (req, res) {
         res.status(200);
         res.type("text/plain");
         res.end(JSON.stringify(profDetails));
+    });
+}, '/login?loginFirst=true');
+
+// ajax call to display professional's bookings when selected from drop down
+auth.get("/getProfBookings/:id", function (req, res) {
+    dao.getProfBookings(req.params.id, function (profBookings) {
+        res.status(200);
+        res.type("text/plain");
+        res.end(JSON.stringify(profBookings));
     });
 }, '/login?loginFirst=true');
 

@@ -77,7 +77,8 @@ module.exports.getTimeSelection = function (callback) {
 }
 
 module.exports.createBooking = function (booking, callback) {
-    db.run("insert into Bookings values (?, ?, ?, ?, ?, ?)", [booking.bookedBy, booking.profId, booking.bookingDate, booking.bookingTime, booking.location, booking.notes], function (err) {
+    db.run("insert into Bookings (bookedBy, profId, bookingDate, bookingTime, location, notes) values (?, ?, ?, ?, ?, ?)",
+    [booking.bookedBy, booking.profId, booking.bookingDate, booking.bookingTime, booking.location, booking.notes],function (err) {
         if (err) {
             console.log(err);
         }
@@ -89,7 +90,16 @@ module.exports.createBooking = function (booking, callback) {
 }
 
 module.exports.getBookingsForUser = function (username, callback) {
-    db.all("select * from Bookings where bookedBy = ?", [username], function (err, rows) {
+    db.all("select b.bookingId, b.bookedBy, b.profId, p.fname, p.lname, b.bookingDate, b.bookingTime, b.location, b.notes from Bookings b, Professionals p where b.profId = p.profId and bookedBy = ? order by b.bookingDate, b.bookingTime asc", [username], function (err, rows) {
+        if (err) {
+            console.log(err);
+        }
+        callback(rows);
+    });
+}
+
+module.exports.getProfBookings = function (profId, callback) {
+    db.all("select b.bookingId, b.bookedBy, b.profId, p.fname, p.lname, b.bookingDate, b.bookingTime, b.location, b.notes from Bookings b, Professionals p where b.profId = p.profId and b.profId = ? order by b.bookingDate, b.bookingTime asc", [profId], function (err, rows) {
         if (err) {
             console.log(err);
         }
