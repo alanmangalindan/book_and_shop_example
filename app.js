@@ -137,7 +137,9 @@ auth.get('/book', function (req, res) {
                     timeSelection: timeSelection,
                     userBookings: userBookings,
                     userData: req.user,
-                    bookingCreated: req.query.bookingCreated
+                    bookingCreated: req.query.bookingCreated,
+                    notesUpdated: req.query.notesUpdated,
+                    bookingDeleted: req.query.bookingDeleted
                 }
                 res.render('book', data);
             });
@@ -166,7 +168,7 @@ auth.post('/book', function (req, res) {
 
 
 // ajax call to display professional's details when selected from drop down
-auth.get("/getProfDetails/:id", function (req, res) {
+auth.get('/getProfDetails/:id', function (req, res) {
     dao.getProfDetails(req.params.id, function (profDetails) {
         res.status(200);
         res.type("text/plain");
@@ -175,11 +177,29 @@ auth.get("/getProfDetails/:id", function (req, res) {
 }, '/login?loginFirst=true');
 
 // ajax call to display professional's bookings when selected from drop down
-auth.get("/getProfBookings/:id", function (req, res) {
+auth.get('/getProfBookings/:id', function (req, res) {
     dao.getProfBookings(req.params.id, function (profBookings) {
         res.status(200);
         res.type("text/plain");
         res.end(JSON.stringify(profBookings));
+    });
+}, '/login?loginFirst=true');
+
+// update booking notes
+auth.post('/updateNotes', function (req, res) {
+    var bookingUpdate = {
+        bookingId: req.body.bookingId,
+        notes: req.body.updatedNotes
+    }
+    dao.updateNotes(bookingUpdate, function() {
+        res.redirect('/book?notesUpdated=true');
+    });
+}, '/login?loginFirst=true');
+
+// delete booking
+auth.post('/deleteBooking', function (req, res) {
+    dao.deleteBooking(req.body.bookingId, function() {
+        res.redirect('/book?bookingDeleted=true');
     });
 }, '/login?loginFirst=true');
 

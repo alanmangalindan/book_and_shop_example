@@ -9,6 +9,24 @@
 </div>
 {{/if}}
 
+{{#if notesUpdated}}
+<div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
+    Booking notes have been succesfully updated.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{{/if}}
+
+{{#if bookingDeleted}}
+<div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
+    Booking has been succesfully deleted.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{{/if}}
+
 <div class="row mt-4">
     <div class="col-sm-4">
         <div class="card bg-light mb-3">
@@ -103,8 +121,7 @@
 </div>
 
 {{#each userBookings}}
-<div class="modal fade" id="booking-{{bookingId}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
-    aria-hidden="true">
+<div class="modal fade" id="booking-{{bookingId}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -113,32 +130,36 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <table class="table table-striped table-responsive">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Location</th>
-                            <th>Notes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{fname}} {{lname}}</a></td>
-                            <td>{{bookingDate}}</td>
-                            <td>{{bookingTime}}</td>
-                            <td>{{location}}</td>
-                            <td>{{notes}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
+            <form method="POST">
+                <div class="modal-body">
+                    <table class="table table-striped table-responsive">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Location</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{fname}} {{lname}}</a></td>
+                                <td>{{bookingDate}}</td>
+                                <td>{{bookingTime}}</td>
+                                <td>{{location}}</td>
+                                <td><textarea id="updatedNotes" class="form-control" name="updatedNotes">{{notes}}</textarea></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="bookingId" value="{{bookingId}}">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" formaction="/updateNotes">Update Notes</button>
+                    <button type="submit" class="btn btn-danger" formaction="/deleteBooking">Delete</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

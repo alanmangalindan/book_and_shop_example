@@ -107,6 +107,26 @@ module.exports.getProfBookings = function (profId, callback) {
     });
 }
 
+module.exports.updateNotes = function (bookingUpdate, callback) {
+    db.run("update Bookings set notes = ? where bookingId = ?", [bookingUpdate.notes, bookingUpdate.bookingId], function (err) {
+        if (err) {
+            console.log(err);
+        }
+        console.log(this.changes + " row(s) affected in Bookings table.");
+        callback();
+    });
+}
+
+module.exports.deleteBooking = function (bookingId, callback) {
+    db.run("delete from Bookings where bookingId = ?", [bookingId], function (err) {
+        if (err) {
+            console.log(err);
+        }
+        console.log(this.changes + " row(s) affected in Bookings table.");
+        callback();
+    })
+}
+
 // module.exports.updateUser = function (u, callback) {
 //     db.run("update Users set password = ?, dob = ?, country = ?, avatar = ?, fname = ?, lname = ?, activeFlag = ?, description = ? where username = ?", [u.password, u.dob, u.country, u.avatar, u.fname, u.lname, u.activeFlag, u.description, u.username], function (err) {
 //         if (err) {
