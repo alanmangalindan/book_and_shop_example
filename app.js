@@ -41,6 +41,7 @@ auth.setupLogout("/logout", "/?loggedOut=true");
 
 //--------------------- ROUTE HANDLERS -------------------------------------------
 
+// home page
 app.get('/', function (req, res) {
 
     if (req.isAuthenticated()) {
@@ -62,13 +63,13 @@ app.get('/', function (req, res) {
     }
 });
 
+// sign up page
 app.get('/signup', function (req, res) {
 
     var data = {
         passwordFail: req.query.passwordFail,
         userData: req.session.partialUserData,
     };
-
 
     res.render('signup', data);
 });
@@ -103,6 +104,7 @@ app.post('/signup', function (req, res) {
     }
 });
 
+// login page
 auth.get('/login', '/', function (req, res) {
     var data = {
         loginFail: req.query.loginFail,
@@ -111,6 +113,7 @@ auth.get('/login', '/', function (req, res) {
     res.render('login', data);
 });
 
+// edit user details page
 auth.get('/userDetails', function (req, res) {
 
     dao.getUser(req.user.username, function (user) {
@@ -121,6 +124,7 @@ auth.get('/userDetails', function (req, res) {
     });
 }, '/login?loginFirst=true');
 
+// booking page
 auth.get('/book', function (req, res) {
 
     dao.getAllProfessionals(function (professionals) {
@@ -134,7 +138,23 @@ auth.get('/book', function (req, res) {
         });
     });
 
+}, '/login?loginFirst=true');
+
+// submit booking and write to database
+auth.post('/book', function (req, res) {
+
 }, '/login?loginFirst=true')
+
+
+// ajax call to display professional's details when selected from drop down
+auth.get("/getProfDetails/:id", function (req, res) {
+    console.log('req.params.id: ' + req.params.id);
+    dao.getProfDetails(req.params.id, function (profDetails) {
+        res.status(200);
+        res.type("text/plain");
+        res.end(JSON.stringify(profDetails));
+    });
+}, '/login?loginFirst=true');
 
 // Serve files from "/public" folder
 app.use(express.static(__dirname + "/public"));

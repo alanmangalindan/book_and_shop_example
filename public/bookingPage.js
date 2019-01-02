@@ -1,20 +1,15 @@
 "use strict";
 
-//ajax call to get all professionaldetails
-function getProfDetails () {
-    $.get("/getProfDetails", function (data, status) {
-        $('#usernameCheck').hide();
+var professionalId;
 
-        var usernames = JSON.parse(data);
+//ajax call to get all professional details
+function getProfDetails(professionalId) {
+    $.get("/getProfDetails/" + professionalId, function (data, status) {
 
-        var usernameTyped = $('#username').val();
-
-        for (var i = 0; i < usernames.length; i++) {
-            if (usernameTyped == usernames[i].username) {
-                $('#usernameCheck').show();
-                break;
-            }
-        }
+        var profDetails = JSON.parse(data);
+        console.log(profDetails);
+        $('#location').val(profDetails.location);
+        $('#specialty').val(profDetails.specialty);
 
     });
 }
@@ -22,6 +17,12 @@ function getProfDetails () {
 //when document is ready, check changes to the selected professional field
 $(document).ready(function () {
 
-    $('#profId').change(getProfDetails);
+    professionalId = $('#profId').val();
 
+    getProfDetails(professionalId);
+
+    $('#profId').change(function () {
+        professionalId = $('#profId').val();
+        getProfDetails(professionalId);
+    });
 });

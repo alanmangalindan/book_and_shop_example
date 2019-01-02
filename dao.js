@@ -50,6 +50,18 @@ module.exports.getAllProfessionals = function (callback) {
     });
 }
 
+module.exports.getProfDetails = function (id, callback) {
+    db.all("select * from Professionals where profId = ?", [id], function (err, rows) {
+        if (rows.length > 0) {
+            console.log(rows.length + " row(s) retrieved from Professionals table.");
+            callback(rows[0]);
+        } else {
+            console.log(rows.length + " row(s) retrieved from Professionals table.");
+            callback(null);
+        };
+    });
+}
+
 
 module.exports.getTimeSelection = function (callback) {
     db.all("select * from TimeSelection", function (err, rows) {
