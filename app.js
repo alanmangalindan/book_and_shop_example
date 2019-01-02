@@ -183,6 +183,28 @@ auth.get("/getProfBookings/:id", function (req, res) {
     });
 }, '/login?loginFirst=true');
 
+// edit Booking
+auth.get('/editBooking/:id', function (req, res) {
+
+    dao.getAllProfessionals(function (professionals) {
+
+        dao.getTimeSelection(function (timeSelection) {
+
+            dao.getBookingsForUser(req.user.username, function (userBookings) {
+                var data = {
+                    prof: professionals,
+                    timeSelection: timeSelection,
+                    userBookings: userBookings,
+                    userData: req.user,
+                    bookingCreated: req.query.bookingCreated
+                }
+                res.render('editBooking', data);
+            });
+        });
+    });
+
+}, '/login?loginFirst=true');
+
 // Serve files from "/public" folder
 app.use(express.static(__dirname + "/public"));
 
