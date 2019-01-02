@@ -88,21 +88,15 @@ function preCheckBooking(professionalId, selectedDate, selectedTime) {
     $.get("/getProfBookings/" + professionalId, function (data, status) {
         var profDetails = JSON.parse(data);
         var matchedDate = profDetails.find(function (d) {
-            if (d.bookingDate = selectedDate) {
-                return true;
-            } else {
-                return false;
-            }
+            return d.bookingDate == selectedDate;
         });
         var matchedTime = profDetails.find(function (t) {
-            if (t.bookingTime = selectedTime) {
-                return true;
-            } else {
-                return false;
-            }
+            return t.bookingTime == selectedTime;
         });
-        if (matchedDate && matchedTime) {
-            $('#bookAppointment').attr("disabled");
+        console.log(matchedDate);
+        console.log(matchedTime);
+        if (matchedDate != null && matchedTime != null) {
+            $('#bookAppointment').attr("disabled", "disabled");
         }
     });
 }
@@ -117,6 +111,9 @@ $(document).ready(function () {
 
     getProfDetails(professionalId);
     getProfBookings(professionalId);
+    preCheckBooking(professionalId, selectedDate, selectedTime);
+
+    $('#bookAppointment').attr("disabled", "disabled");
 
     $('#profId').change(function () {
         professionalId = $('#profId').val();
@@ -130,5 +127,14 @@ $(document).ready(function () {
         selectedDate = $('#date').val();
         selectedTime = $('#time').val();
         preCheckBooking(professionalId, selectedDate, selectedTime);
-    })
+    });
+
+    $('#time').change(function () {
+        $('#bookAppointment').removeAttr("disabled");
+        professionalId = $('#profId').val();
+        selectedDate = $('#date').val();
+        selectedTime = $('#time').val();
+        preCheckBooking(professionalId, selectedDate, selectedTime);
+    });
+
 });
