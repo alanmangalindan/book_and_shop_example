@@ -35,49 +35,48 @@ function getProfBookings(professionalId) {
             for (var j = 0; j < profBookings.length; j++) {
                 profBookingsTable +=
                     '<div class="modal fade" id="profDetailBooking-' + profBookings[j].bookingId + '" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true"> ' +
-                        '<div class="modal-dialog" role="document"> ' +
-                            '<div class="modal-content"> ' +
-                                '<div class="modal-header"> ' +
-                                    '<h5 class="modal-title" id="ModalLabel">Booking Detail</h5> ' +
-                                    '<button type="button" class="close" data-dismiss="modal" aria-label="Close"> ' +
-                                        '<span aria-hidden="true">&times;</span> ' +
-                                    '</button> ' +
-                                '</div> ' +
-                                '<form method="POST"> ' +
-                                    '<div class="modal-body"> ' +
-                                        '<table class="table table-striped table-responsive"> ' +
-                                            '<thead> ' +
-                                                '<tr> ' +
-                                                    '<th>Name</th> ' +
-                                                    '<th>Date</th> ' +
-                                                    '<th>Time</th> ' +
-                                                    '<th>Location</th> ' +
-                                                    '<th>Notes</th> ' +
-                                                '</tr> ' +
-                                            '</thead> ' +
-                                            '<tbody> ' +
-                                                '<tr> ' +
-                                                '<td>' + profBookings[j].fname + ' ' + profBookings[j].lname + '</td> ' +
-                                                '<td>' + profBookings[j].bookingDate + '</td>' +
-                                                '<td>' + profBookings[j].bookingTime + '</td>' +
-                                                '<td>' + profBookings[j].location + '</td>' +
-                                                '<td><textarea id="updatedNotes" class="form-control" name="updatedNotes">' + profBookings[j].notes + '</textarea></td> ' +
-                            '</tr> ' +
-                        '</tbody> ' +
+                    '<div class="modal-dialog" role="document"> ' +
+                    '<div class="modal-content"> ' +
+                    '<div class="modal-header"> ' +
+                    '<h5 class="modal-title" id="ModalLabel">Booking Detail</h5> ' +
+                    '<button type="button" class="close" data-dismiss="modal" aria-label="Close"> ' +
+                    '<span aria-hidden="true">&times;</span> ' +
+                    '</button> ' +
+                    '</div> ' +
+                    '<form method="POST"> ' +
+                    '<div class="modal-body"> ' +
+                    '<table class="table table-striped table-responsive"> ' +
+                    '<thead> ' +
+                    '<tr> ' +
+                    '<th>Name</th> ' +
+                    '<th>Date</th> ' +
+                    '<th>Time</th> ' +
+                    '<th>Location</th> ' +
+                    '<th>Notes</th> ' +
+                    '</tr> ' +
+                    '</thead> ' +
+                    '<tbody> ' +
+                    '<tr> ' +
+                    '<td>' + profBookings[j].fname + ' ' + profBookings[j].lname + '</td> ' +
+                    '<td>' + profBookings[j].bookingDate + '</td>' +
+                    '<td>' + profBookings[j].bookingTime + '</td>' +
+                    '<td>' + profBookings[j].location + '</td>' +
+                    '<td><textarea id="updatedNotes" class="form-control" name="updatedNotes">' + profBookings[j].notes + '</textarea></td> ' +
+                    '</tr> ' +
+                    '</tbody> ' +
                     '</table> ' +
-                '</div> ' +
-                                '<div class="modal-footer"> ' +
-                                    '<input type="hidden" name="bookingId" value="' + profBookings[j].bookingId + '"> ' +
-                                        '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> ' +
-                                        '<button type="submit" class="btn btn-primary" formaction="/updateNotes">Update Notes</button> ' +
-                                        '<button type="submit" class="btn btn-danger" formaction="/deleteBooking">Delete</button> ' +
-                '</div> ' +
-            '</form> ' +
-                            '</div> ' +
-                        '</div> ' +
+                    '</div> ' +
+                    '<div class="modal-footer"> ' +
+                    '<input type="hidden" name="bookingId" value="' + profBookings[j].bookingId + '"> ' +
+                    '<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> ' +
+                    '<button type="submit" class="btn btn-primary" formaction="/updateNotes">Update Notes</button> ' +
+                    '<button type="submit" class="btn btn-danger" formaction="/deleteBooking">Delete</button> ' +
+                    '</div> ' +
+                    '</form> ' +
+                    '</div> ' +
+                    '</div> ' +
                     '</div> ';
             }
-            console.log(profBookingsTable);
             bookingsDisplay.append(profBookingsTable);
         }
     });
@@ -90,13 +89,11 @@ function preCheckBooking(professionalId, selectedDate, selectedTime) {
         var matchedDate = profDetails.find(function (d) {
             return d.bookingDate == selectedDate;
         });
-        var matchedTime = profDetails.find(function (t) {
-            return t.bookingTime == selectedTime;
-        });
-        console.log(matchedDate);
-        console.log(matchedTime);
-        if (matchedDate != null && matchedTime != null) {
-            $('#bookAppointment').attr("disabled", "disabled");
+        if (matchedDate) {
+            if (matchedDate.bookingTime == selectedTime) {
+                $('#bookAppointment').attr("disabled", "disabled");
+                $('#bookingExists').show();
+            }
         }
     });
 }
@@ -104,25 +101,43 @@ function preCheckBooking(professionalId, selectedDate, selectedTime) {
 //when document is ready, check changes to the selected professional field
 $(document).ready(function () {
 
-    var selectedDate;
-    var selectedTime;
+    $('#bookingExists').hide();
+
+    // pre-populate date field with today's date (from https://stackoverflow.com/questions/23593052/format-javascript-date-to-yyyy-mm-dd)
+    var d = new Date(),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    var todaysDate = [year, month, day].join('-');
+    console.log(todaysDate);
+    $('#date').val(todaysDate);
 
     professionalId = $('#profId').val();
+    var selectedDate = $('#date').val();
+    var selectedTime = $('#time').val();
 
     getProfDetails(professionalId);
     getProfBookings(professionalId);
     preCheckBooking(professionalId, selectedDate, selectedTime);
 
-    $('#bookAppointment').attr("disabled", "disabled");
-
     $('#profId').change(function () {
+        $('#bookAppointment').removeAttr("disabled");
+        $('#bookingExists').hide();
         professionalId = $('#profId').val();
+        selectedDate = $('#date').val();
+        selectedTime = $('#time').val();
         getProfDetails(professionalId);
         getProfBookings(professionalId);
+        preCheckBooking(professionalId, selectedDate, selectedTime);
     });
 
     $('#date').change(function () {
         $('#bookAppointment').removeAttr("disabled");
+        $('#bookingExists').hide();
         professionalId = $('#profId').val();
         selectedDate = $('#date').val();
         selectedTime = $('#time').val();
@@ -131,6 +146,7 @@ $(document).ready(function () {
 
     $('#time').change(function () {
         $('#bookAppointment').removeAttr("disabled");
+        $('#bookingExists').hide();
         professionalId = $('#profId').val();
         selectedDate = $('#date').val();
         selectedTime = $('#time').val();
