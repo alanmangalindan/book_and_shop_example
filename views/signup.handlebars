@@ -5,6 +5,7 @@
             <div class="card-body">
                 <a href="/auth/google" class="btn btn-danger">Sign Up via Google</a>
                 <a href="/auth/twitter" class="btn btn-primary">Sign Up via Twitter</a>
+                {{!-- <a href="/auth/facebook" class="btn btn-info">Sign Up via Facebook</a> --}}
                 <small class="form-text text-muted">MediBook will never post anything on your social media account.</small>
             </div>
         </div>
@@ -62,6 +63,14 @@
                     {{#if passwordFail}}
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         Your password and confirmation password do not match.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {{/if}}
+                    {{#if usernameExists}}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Email already exists for another user. Please use another Email address. 
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

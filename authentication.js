@@ -4,6 +4,9 @@ var dao = require('./dao.js');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+module.exports.bcryptAuth = bcrypt;
+module.exports.saltRoundsAuth = saltRounds;
+
 // Passport setup code
 // --------------------------------------------------------------------------
 
@@ -11,6 +14,8 @@ const saltRounds = 10;
 // that the authentication type should be "local".
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+
+module.exports.passportAuth = passport;
 
 // Set up local authentication
 var localStrategy = new LocalStrategy(
@@ -111,7 +116,6 @@ passport.use(new TwitterStrategy({
     callbackURL: config.twitter.callbackURL
 },
     function (accessToken, refreshToken, profile, done) {
-        console.log(profile);
         var appUsername = profile.id + "@fromTwitterAccount.co.nz";
         dao.getUser(appUsername, function (user) {
             if (user !== null) {
@@ -134,6 +138,46 @@ passport.use(new TwitterStrategy({
                         activeFlag: 1
                     }
                     dao.createUser(newUserWithTwitterAuth, function (err, newUserLogsIn) {
+                        done(null, newUserLogsIn);
+                    });
+                });
+            }
+        });
+    }
+));
+
+// add Facebook OAuth2 authentication Strategy
+var FacebookStrategy = require('passport-facebook').Strategy;
+
+passport.use(new FacebookStrategy({
+    clientID: config.facebook.clientID,
+    clientSecret: config.facebook.clientSecret,
+    callbackURL: config.facebook.callbackURL
+},
+    function (accessToken, refreshToken, profile, done) {
+        console.log(profile);
+        var appUsername = profile.id + "@fromTwitterAccount.co.nz";
+        dao.getUser(appUsername, function (user) {
+            if (user !== null) {
+                done(null, user);
+            } else {
+
+                // generate random password from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+                var randomPassword = "";
+                var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+
+                for (var i = 0; i < 8; i++)
+                    randomPassword += possible.charAt(Math.floor(Math.random() * possible.length));
+
+                bcrypt.hash(randomPassword, saltRounds, function (err, hash) {
+                    var newUserWithFacebookAuth = {
+                        fname: profile.username,
+                        lname: 'twitter',
+                        username: appUsername,
+                        password: hash,
+                        activeFlag: 1
+                    }
+                    dao.createUser(newUserWithFacebookAuth, function (err, newUserLogsIn) {
                         done(null, newUserLogsIn);
                     });
                 });
@@ -218,6 +262,21 @@ module.exports.setupTwitterLoginCallback = function (loginCallbackRoute) {
             res.redirect('/');
         });
 }
+
+module.exports.setupFacebookLogin = function (loginRoute) {
+    theApp.get(loginRoute,
+        passport.authenticate('facebook'),
+        function (req, res) { });
+}
+
+module.exports.setupFacebookLoginCallback = function (loginCallbackRoute) {
+    theApp.get(loginCallbackRoute,
+        passport.authenticate('facebook', { failureRedirect: '/' }),
+        function (req, res) {
+            res.redirect('/');
+        });
+}
+
 
 // When the user POSTs to the given route, go to one of two destinations, depending on whether we're logged in.
 module.exports.post = function (route, funcIfAuthenticated, funcIfNotAuthenticated) {

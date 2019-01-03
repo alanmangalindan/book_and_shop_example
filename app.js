@@ -42,6 +42,9 @@ auth.setupGoogleLogin('/auth/google');
 auth.setupGoogleLoginCallback('/auth/google/callback');
 auth.setupTwitterLogin('/auth/twitter');
 auth.setupTwitterLoginCallback('/auth/twitter/callback');
+// Facebook login not yet working
+// auth.setupFacebookLogin('/auth/facebook');
+// auth.setupFacebookLoginCallback('/auth/facebook/callback');
 
 //--------------------- ROUTE HANDLERS -------------------------------------------
 
@@ -73,6 +76,7 @@ app.get('/signup', function (req, res) {
     var data = {
         passwordFail: req.query.passwordFail,
         userData: req.session.partialUserData,
+        usernameExists: req.query.usernameExists
     };
 
     res.render('signup', data);
@@ -89,7 +93,7 @@ app.post('/signup', function (req, res) {
     } else {
         delete req.session.partialUserData;
 
-        bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
+        auth.bcryptAuth.hash(req.body.password, auth.saltRoundsAuth, function (err, hash) {
             var newUser = {
                 fname: req.body.fname,
                 lname: req.body.lname,
@@ -98,9 +102,19 @@ app.post('/signup', function (req, res) {
                 activeFlag: req.body.activeFlag
             }
             dao.createUser(newUser, function (err, user) {
-                passport.authenticate('local')(req, res, function () {
-                    res.redirect('/');
-                });
+                if (err) {
+                    req.session.partialUserData = {
+                        fname: req.body.fname,
+                        lname: req.body.lname,
+                        username: req.body.username
+                    }
+                    res.redirect('/signup?usernameExists=true');
+                } else {
+                    delete req.session.partialUserData;
+                    auth.passportAuth.authenticate('local')(req, res, function () {
+                        res.redirect('/');
+                    });
+                }
             });
         });
     }
