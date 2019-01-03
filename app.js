@@ -40,6 +40,8 @@ auth.setupLogin("/login", "/", "/login?loginFail=true");
 auth.setupLogout("/logout", "/?loggedOut=true");
 auth.setupGoogleLogin('/auth/google');
 auth.setupGoogleLoginCallback('/auth/google/callback');
+auth.setupFacebookLogin('/auth/facebook');
+auth.setupFacebookLoginCallback('/auth/facebook/callback');
 
 //--------------------- ROUTE HANDLERS -------------------------------------------
 

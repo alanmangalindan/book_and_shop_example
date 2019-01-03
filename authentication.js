@@ -62,7 +62,8 @@ passport.deserializeUser(function (username, done) {
 // add oauth.js
 var config = require('./oauth.js');
 
-// add google OAuth2 authentication Strategy
+// Google and Facebook authentication codes adapted from https://mherman.org/blog/social-authentication-with-passport-dot-js/
+// add Google OAuth2 authentication Strategy
 var GoogleStrategy = require('passport-google-oauth2').Strategy;
 
 passport.use(new GoogleStrategy({
@@ -93,6 +94,45 @@ passport.use(new GoogleStrategy({
                         activeFlag: 1
                     }
                     dao.createUser(newUserWithGoogleAuth, function (err, newUserLogsIn) {
+                        done(null, newUserLogsIn);
+                    });
+                });
+            }
+        });
+    }
+));
+
+// add Facebook OAuth2 authentication Strategy
+var FacebookStrategy = require('passport-facebook').Strategy;
+
+passport.use(new FacebookStrategy({
+    clientID: config.facebook.clientID,
+    clientSecret: config.facebook.clientSecret,
+    callbackURL: config.facebook.callbackURL
+},
+    function (accessToken, refreshToken, profile, done) {
+        console.log(profile);
+        dao.getUser(profile.email, function (user) {
+            if (user !== null) {
+                done(null, user);
+            } else {
+
+                // generate random password from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+                var randomPassword = "";
+                var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+
+                for (var i = 0; i < 8; i++)
+                    randomPassword += possible.charAt(Math.floor(Math.random() * possible.length));
+
+                bcrypt.hash(randomPassword, saltRounds, function (err, hash) {
+                    var newUserWithFacebookAuth = {
+                        fname: profile.name.givenName,
+                        lname: profile.name.familyName,
+                        username: profile.email,
+                        password: hash,
+                        activeFlag: 1
+                    }
+                    dao.createUser(newUserWithFacebookAuth, function (err, newUserLogsIn) {
                         done(null, newUserLogsIn);
                     });
                 });
@@ -157,23 +197,26 @@ module.exports.setupGoogleLogin = function (loginRoute) {
         }
         ));
 }
-module.exports.setupGoogleLoginCallback = function(loginCallbackRoute) {
+module.exports.setupGoogleLoginCallback = function (loginCallbackRoute) {
     theApp.get(loginCallbackRoute,
-    passport.authenticate('google', { failureRedirect: '/' }),
-    function (req, res) {
-        res.redirect('/');
-    });
+        passport.authenticate('google', { failureRedirect: '/' }),
+        function (req, res) {
+            res.redirect('/');
+        });
+}
+module.exports.setupFacebookLogin = function (loginRoute) {
+    theApp.get(loginRoute,
+        passport.authenticate('facebook'),
+        function (req, res) { });
 }
 
-
-// app.get('/auth/facebook',
-//     passport.authenticate('facebook'),
-//     function (req, res) { });
-// app.get('/auth/facebook/callback',
-//     passport.authenticate('facebook', { failureRedirect: '/' }),
-//     function (req, res) {
-//         res.redirect('/account');
-//     });
+module.exports.setupFacebookLoginCallback = function (loginCallbackRoute) {
+    theApp.get(loginCallbackRoute,
+        passport.authenticate('facebook', { failureRedirect: '/' }),
+        function (req, res) {
+            res.redirect('/');
+        });
+}
 
 // When the user POSTs to the given route, go to one of two destinations, depending on whether we're logged in.
 module.exports.post = function (route, funcIfAuthenticated, funcIfNotAuthenticated) {
