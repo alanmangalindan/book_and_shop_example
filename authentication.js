@@ -41,6 +41,10 @@ var localStrategy = new LocalStrategy(
     }
 );
 
+// Set up Passport to use the given local authentication strategy
+// we've defined above.
+passport.use('local', localStrategy);
+
 // This method will be called when we need to save the currently
 // authenticated user's username to the session.
 passport.serializeUser(function (user, done) {
@@ -97,9 +101,6 @@ passport.use(new GoogleStrategy({
     }
 ));
 
-// Set up Passport to use the given local authentication strategy
-// we've defined above.
-passport.use('local', localStrategy);
 // --------------------------------------------------------------------------
 
 
@@ -145,6 +146,35 @@ module.exports.setupLogout = function (logoutRoute, redirect) {
     });
 }
 
+// Set up Google and Facebook Auths routes (from https://mherman.org/blog/social-authentication-with-passport-dot-js/)
+module.exports.setupGoogleLogin = function (loginRoute) {
+    theApp.get(loginRoute,
+        passport.authenticate('google', {
+            scope: [
+                'https://www.googleapis.com/auth/plus.login',
+                'https://www.googleapis.com/auth/plus.profile.emails.read'
+            ]
+        }
+        ));
+}
+module.exports.setupGoogleLoginCallback = function(loginCallbackRoute) {
+    theApp.get(loginCallbackRoute,
+    passport.authenticate('google', { failureRedirect: '/' }),
+    function (req, res) {
+        res.redirect('/');
+    });
+}
+
+
+// app.get('/auth/facebook',
+//     passport.authenticate('facebook'),
+//     function (req, res) { });
+// app.get('/auth/facebook/callback',
+//     passport.authenticate('facebook', { failureRedirect: '/' }),
+//     function (req, res) {
+//         res.redirect('/account');
+//     });
+
 // When the user POSTs to the given route, go to one of two destinations, depending on whether we're logged in.
 module.exports.post = function (route, funcIfAuthenticated, funcIfNotAuthenticated) {
     theApp.post(route, function (req, res) {
@@ -167,3 +197,4 @@ module.exports.get = function (route, funcIfAuthenticated, funcIfNotAuthenticate
     });
 };
 // --------------------------------------------------------------------------
+

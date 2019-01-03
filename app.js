@@ -38,6 +38,8 @@ var auth = require('./authentication.js');
 auth.initialize(app);
 auth.setupLogin("/login", "/", "/login?loginFail=true");
 auth.setupLogout("/logout", "/?loggedOut=true");
+auth.setupGoogleLogin('/auth/google');
+auth.setupGoogleLoginCallback('/auth/google/callback');
 
 //--------------------- ROUTE HANDLERS -------------------------------------------
 
@@ -110,6 +112,7 @@ auth.get('/login', '/', function (req, res) {
     }
     res.render('login', data);
 });
+
 
 // edit user details page
 auth.get('/userDetails', function (req, res) {
@@ -189,14 +192,14 @@ auth.post('/updateNotes', function (req, res) {
         bookingId: req.body.bookingId,
         notes: req.body.updatedNotes
     }
-    dao.updateNotes(bookingUpdate, function() {
+    dao.updateNotes(bookingUpdate, function () {
         res.redirect('/book?notesUpdated=true');
     });
 }, '/login?loginFirst=true');
 
 // delete booking
 auth.post('/deleteBooking', function (req, res) {
-    dao.deleteBooking(req.body.bookingId, function() {
+    dao.deleteBooking(req.body.bookingId, function () {
         res.redirect('/book?bookingDeleted=true');
     });
 }, '/login?loginFirst=true');
