@@ -96,9 +96,7 @@ app.post('/signup', function (req, res) {
             dao.createUser(newUser, function (err, user) {
                 passport.authenticate('local')(req, res, function () {
                     res.redirect('/');
-
                 });
-
             });
         });
     }

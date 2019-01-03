@@ -113,7 +113,6 @@ $(document).ready(function () {
     if (day.length < 2) day = '0' + day;
 
     var todaysDate = [year, month, day].join('-');
-    console.log(todaysDate);
     $('#date').val(todaysDate);
 
     professionalId = $('#profId').val();

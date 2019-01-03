@@ -55,6 +55,48 @@ passport.deserializeUser(function (username, done) {
     });
 });
 
+// add oauth.js
+var config = require('./oauth.js');
+
+// add google OAuth2 authentication Strategy
+var GoogleStrategy = require('passport-google-oauth2').Strategy;
+
+passport.use(new GoogleStrategy({
+    clientID: config.google.clientID,
+    clientSecret: config.google.clientSecret,
+    callbackURL: config.google.callbackURL,
+    passReqToCallback: true
+},
+    function (request, accessToken, refreshToken, profile, done) {
+        dao.getUser(profile.email, function (user) {
+            if (user !== null) {
+                done(null, user);
+            } else {
+
+                // generate random password from https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+                var randomPassword = "";
+                var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+
+                for (var i = 0; i < 8; i++)
+                    randomPassword += possible.charAt(Math.floor(Math.random() * possible.length));
+
+                bcrypt.hash(randomPassword, saltRounds, function (err, hash) {
+                    var newUserWithGoogleAuth = {
+                        fname: profile.name.givenName,
+                        lname: profile.name.familyName,
+                        username: profile.email,
+                        password: hash,
+                        activeFlag: 1
+                    }
+                    dao.createUser(newUserWithGoogleAuth, function (err, newUserLogsIn) {
+                        done(null, newUserLogsIn);
+                    });
+                });
+            }
+        });
+    }
+));
+
 // Set up Passport to use the given local authentication strategy
 // we've defined above.
 passport.use('local', localStrategy);
