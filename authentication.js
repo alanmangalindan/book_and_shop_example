@@ -62,7 +62,7 @@ passport.deserializeUser(function (username, done) {
 // add oauth.js
 var config = require('./oauth.js');
 
-// Google and Facebook authentication codes adapted from https://mherman.org/blog/social-authentication-with-passport-dot-js/
+// Google and Twitter authentication codes adapted from https://mherman.org/blog/social-authentication-with-passport-dot-js/
 // add Google OAuth2 authentication Strategy
 var GoogleStrategy = require('passport-google-oauth2').Strategy;
 
@@ -102,17 +102,18 @@ passport.use(new GoogleStrategy({
     }
 ));
 
-// add Facebook OAuth2 authentication Strategy
-var FacebookStrategy = require('passport-facebook').Strategy;
+// add Twitter OAuth2 authentication Strategy
+var TwitterStrategy = require('passport-twitter').Strategy;
 
-passport.use(new FacebookStrategy({
-    clientID: config.facebook.clientID,
-    clientSecret: config.facebook.clientSecret,
-    callbackURL: config.facebook.callbackURL
+passport.use(new TwitterStrategy({
+    consumerKey: config.twitter.consumerKey,
+    consumerSecret: config.twitter.consumerSecret,
+    callbackURL: config.twitter.callbackURL
 },
     function (accessToken, refreshToken, profile, done) {
         console.log(profile);
-        dao.getUser(profile.email, function (user) {
+        var appUsername = profile.id + "@fromTwitterAccount.co.nz";
+        dao.getUser(appUsername, function (user) {
             if (user !== null) {
                 done(null, user);
             } else {
@@ -125,14 +126,14 @@ passport.use(new FacebookStrategy({
                     randomPassword += possible.charAt(Math.floor(Math.random() * possible.length));
 
                 bcrypt.hash(randomPassword, saltRounds, function (err, hash) {
-                    var newUserWithFacebookAuth = {
-                        fname: profile.name.givenName,
-                        lname: profile.name.familyName,
-                        username: profile.email,
+                    var newUserWithTwitterAuth = {
+                        fname: profile.username,
+                        lname: 'twitter',
+                        username: appUsername,
                         password: hash,
                         activeFlag: 1
                     }
-                    dao.createUser(newUserWithFacebookAuth, function (err, newUserLogsIn) {
+                    dao.createUser(newUserWithTwitterAuth, function (err, newUserLogsIn) {
                         done(null, newUserLogsIn);
                     });
                 });
@@ -186,7 +187,7 @@ module.exports.setupLogout = function (logoutRoute, redirect) {
     });
 }
 
-// Set up Google and Facebook Auths routes (from https://mherman.org/blog/social-authentication-with-passport-dot-js/)
+// Set up Google and twitter Auths routes (from https://mherman.org/blog/social-authentication-with-passport-dot-js/)
 module.exports.setupGoogleLogin = function (loginRoute) {
     theApp.get(loginRoute,
         passport.authenticate('google', {
@@ -204,15 +205,15 @@ module.exports.setupGoogleLoginCallback = function (loginCallbackRoute) {
             res.redirect('/');
         });
 }
-module.exports.setupFacebookLogin = function (loginRoute) {
+module.exports.setupTwitterLogin = function (loginRoute) {
     theApp.get(loginRoute,
-        passport.authenticate('facebook'),
+        passport.authenticate('twitter'),
         function (req, res) { });
 }
 
-module.exports.setupFacebookLoginCallback = function (loginCallbackRoute) {
+module.exports.setupTwitterLoginCallback = function (loginCallbackRoute) {
     theApp.get(loginCallbackRoute,
-        passport.authenticate('facebook', { failureRedirect: '/' }),
+        passport.authenticate('twitter', { failureRedirect: '/' }),
         function (req, res) {
             res.redirect('/');
         });
