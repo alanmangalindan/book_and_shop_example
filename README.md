@@ -15,6 +15,7 @@ implemented through the following:
 - JQuery
 - NodeJS (see package.json for packages involved)
 - Bootstrap 4 for rapid prototyping
+- Handlebars view engine
 - SQLite
 
 Review book_and_shop_db-init.sql to initialise your database.
