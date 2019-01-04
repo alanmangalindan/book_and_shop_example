@@ -1,8 +1,8 @@
 # book_and_shop_example
 
-A personal project that implements a booking management and shopping application with the following functionalities:
+A personal project that implements a booking management application and an online shopping application with the following functionalities:
 - user access management
-- user sign up and login via Google and Twitter
+- user sign up and login via Google and Twitter (OAuth)
 - storing data via SQLite database
 - bcrypt encryption for storing passwords
 - user error checking via browser and server checks
