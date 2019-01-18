@@ -1,0 +1,24 @@
+
+
+<div class="row">
+    {{#each medItems}}
+    <div class="col-md-6 col-sm-12">
+        <div class="card mb-1">
+            <img class="card-img-top" src="/images/animals/{{image}}" alt="{{name}}">
+            <div class="card-body">
+                <h5 class="card-title">{{name}}</h5>
+                <p class="card-text">{{description}}</p>
+                {{!-- <a href="#" class="btn btn-primary">Go somewhere</a> --}}
+                <form class="form-inline" action="/addToCart" method="POST">
+                    <div class="form-group">
+                        <label for="amount-{{id}}" class="sr-only">Amount</label>
+                        <input class="form-control" type="number" min="1" max="10" value="1" name="amount" id="amount-{{id}}">
+                    </div>
+                    <button class="btn btn-primary" type="submit">+</button>
+                    <input type="hidden" name="animalId" value="{{id}}">
+                </form>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</div>
