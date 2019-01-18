@@ -220,6 +220,10 @@ auth.post('/deleteBooking', function (req, res) {
     });
 }, '/login?loginFirst=true');
 
+auth.get('/shop', function (req, res) {
+
+}, '/login?loginFirst=true');
+
 // Serve files from "/public" folder
 app.use(express.static(__dirname + "/public"));
 
