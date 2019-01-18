@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <!-- JavaScript below is part of Bootstrap -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+
+    <title>MediBook</title>
+</head>
+
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">
+            <img style="background-color:white; border: 1px solid black" src="/stethoscope.png" width="30" height="30"
+                alt="">
+            MediBook
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/book">Book Appointment</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/shop">Shop</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                {{#if userData}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/userDetails">{{userData.fname}}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+                {{else}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/signup">Sign Up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                {{/if}}
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-8">
+                {{{body}}}
+            </div>
+
+            {{!Shopping Cart}}
+            <div class="col-md-4">
+                <div class="shopping-cart card">
+                    <h5 class="card-header bg-primary">
+                        My Cart
+                    </h5>
+                    <div class="card-body">
+                        {{#if cart}}
+                        <form action="/updateCart" method="POST">
+                            <table class="table table-striped">
+                                <tbody>
+                                    {{#each cart}}
+                                    {{!-- <tr> {{! is the col-md-4 class necessary?}}
+                                        <td class="col-md-4"><input type="number" min="0" max="100" class="form-control"
+                                                name="count-{{id}}" value="{{count}}"></td>
+                                        <td class="col-md-8">
+                                            <p class="form-control-static">{{name}}</p>
+                                        </td>
+                                    </tr> --}}
+                                    <tr>
+                                        <td><input type="number" min="0" max="100" class="form-control" name="count-{{id}}"
+                                                value="{{count}}"></td>
+                                        <td>
+                                            <p class="form-control-static">{{name}}</p>
+                                        </td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                            <div class="form-group">
+                                <button class="btn btn-primary" type="submit">Update Quantities</button>
+                                <button formaction="/clearCart" class="btn btn-danger" type="submit">Clear Cart</button>
+                            </div>
+                            {{!Used so we can redirect back to this page when the user updates their cart.}}
+                            <input type="hidden" name="thisPage" value="{{thisPage}}">
+                        </form>
+                        {{else}}
+                        <p class="card-text">No items added to shopping cart.</p>
+                        {{/if}}
+
+                        {{#if cartMessage}}
+                        <div class="alert alert-info alert-dismissable fade show" role="alert">
+                            {{cartMessage}}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div style="font-size: small; text-align: center">Icons made by <a href="https://www.flaticon.com/authors/freepik"
+                title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+            is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC
+                3.0 BY</a></div>
+
+    </div>
+
+</body>
+
+</html>
