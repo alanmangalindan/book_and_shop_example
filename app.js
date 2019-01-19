@@ -222,6 +222,15 @@ auth.post('/deleteBooking', function (req, res) {
 
 auth.get('/shop', function (req, res) {
 
+    dao.getAllMedSupplies(function(medSupplies) {
+        var data = {
+            userData: req.user,
+            medSupplies: medSupplies,
+            layout: "withShopCart"
+        }
+        res.render("shop", data);
+    })
+
 }, '/login?loginFirst=true');
 
 // Serve files from "/public" folder

@@ -78,15 +78,15 @@ module.exports.getTimeSelection = function (callback) {
 
 module.exports.createBooking = function (booking, callback) {
     db.run("insert into Bookings (bookedBy, profId, bookingDate, bookingTime, location, notes) values (?, ?, ?, ?, ?, ?)",
-    [booking.bookedBy, booking.profId, booking.bookingDate, booking.bookingTime, booking.location, booking.notes],function (err) {
-        if (err) {
-            console.log(err);
-        }
+        [booking.bookedBy, booking.profId, booking.bookingDate, booking.bookingTime, booking.location, booking.notes], function (err) {
+            if (err) {
+                console.log(err);
+            }
 
-        console.log(this.changes + " row(s) inserted in Bookings table.");
+            console.log(this.changes + " row(s) inserted in Bookings table.");
 
-        callback();
-    });
+            callback();
+        });
 }
 
 module.exports.getBookingsForUser = function (username, callback) {
@@ -124,7 +124,15 @@ module.exports.deleteBooking = function (bookingId, callback) {
         }
         console.log(this.changes + " row(s) affected in Bookings table.");
         callback();
-    })
+    });
+}
+
+//----------------------Queries relating to Shopping Functionalities---------------------------
+module.exports.getAllMedSupplies = function (callback) {
+    db.all("select * from medSupplies", function (err, rows) {
+        console.log(rows.length + " row(s) retrieved from medSupplies table.");
+        callback(rows);
+    });
 }
 
 // module.exports.updateUser = function (u, callback) {
