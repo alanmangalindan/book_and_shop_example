@@ -29,6 +29,15 @@ create table Bookings (
     foreign key (profId) references Professionals (profId)
 );
 
+create table medSupplies (
+    id integer not null primary key,
+    name varchar(50) not null,
+    description text,
+    image varchar(50),
+    price integer,
+    _comment text
+)
+
 --store list of time slots for booking
 create table TimeSelection (
     time varchar(20) not null primary key
@@ -52,3 +61,32 @@ insert into Professionals (fname, lname, location, specialty) values
 ('Cinnamon', 'Durian', 'Hamilton', 'Musculoskeletal medicine'),
 ('Edamame', 'Fig', 'Napier', 'General practice'),
 ('Grape', 'Hazelnut', 'Christchurch', 'Emergency medicine');
+
+-- initialise medSupplies table values
+insert into medSupplies (name, description, image, price, _comment) values
+("Blood Pressure Monitor", "Upper Arm Blood Pressure Monitor with Cuff that fits Standard and Large Arms", "BPMonitor.jpg", 80, "source: https://www.amazon.com/Omron-HEM-780-Automatic-Pressure-Monitor/dp/B0009XQUES"),
+("Syringe and Needle", "Bag of 10 1cc 31g 5/16 inch", "SyringeAndNeedle.jpg", "price": 10, "source: https://www.amazon.com/Bag-10-1cc-31g-inch/dp/B07CBPQ4YD/ref=sr_1_4?ie=UTF8&qid=1547840438&sr=8-4&keywords=syringe+with+needle"),
+    {
+        "id": 2,
+        "name": "Medical Gloves",
+        "description": "AMMEX - AINPF42100-BX - Medical Nitrile Gloves - Disposable, Powder Free, Exam Grade, 4 mil, Small, Indigo (Box of 100)",
+        "image": "Gloves.jpg",
+        "price": 15,
+        "_comment": "source: https://www.amazon.com/AMMEX-AINPF42100-BX-Medical-Nitrile-Disposable/dp/B00CF49QQI/ref=sr_1_2_sspa?ie=UTF8&qid=1547840647&sr=8-2-spons&keywords=medical+gloves&psc=1"
+    },
+    {
+        "id": 3,
+        "name": "Stethoscope",
+        "description": "Clinical Grade Dual-Head Stethoscope by GreaterGoods. (Certified Refurbished) Classic Lightweight Design for The Medical Professional (Black Steel)",
+        "image": "Stethoscope.jpg",
+        "price": 55,
+        "_comment": "https://www.amazon.com/Stethoscope-GreaterGoods-Refurbished-Lightweight-Professional/dp/B07L4XVBDB/ref=sr_1_4?s=industrial&ie=UTF8&qid=1547840794&sr=1-4&keywords=stethoscope"
+    },
+    {
+        "id": 4,
+        "name": "Automated External Defibrillator",
+        "description": "Philips HeartStart Home Defibrillator. Home defibrillator designed for ease of use and prompt response. Intuitive voice instructions offer step-by-step guidance for administering therapy.",
+        "image": "AED.jpg",
+        "price": 2000,
+        "_comment": "source: https://www.amazon.com/HeartStart-861284-Philips-Home-Defibrillator/dp/B00064CED6/ref=sr_1_1_a_it?ie=UTF8&qid=1547841129&sr=8-1-spons&keywords=automated+external+defibrillator&psc=1"
+    }
