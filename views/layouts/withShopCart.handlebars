@@ -52,6 +52,9 @@
                     <a class="nav-link" href="/userDetails">{{userData.fname}}</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="/orderHistory">My Orders</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="/logout">Logout</a>
                 </li>
                 {{else}}
@@ -109,6 +112,7 @@
                             {{!Used so we can redirect back to this page when the user updates their cart.}}
                             <input type="hidden" name="thisPage" value="{{thisPage}}">
                         </form>
+                        <a class="btn btn-success mb-2" href="/checkout">Checkout</a>
                         {{else}}
                         <p class="card-text">No items added to shopping cart.</p>
                         {{/if}}

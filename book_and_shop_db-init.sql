@@ -29,13 +29,30 @@ create table Bookings (
     foreign key (profId) references Professionals (profId)
 );
 
-create table medSupplies (
-    id integer not null primary key,
+create table MedSupplies (
+    id integer not null primary key autoincrement,
     name varchar(50) not null,
     description text,
     image varchar(50),
     price integer,
     _comment text
+);
+
+create table Orders (
+    id integer not null primary key autoincrement,
+    username varchar(50) not null,
+    timestamp timestamp,
+    totalCost integer,
+    foreign key (username) references Users (username)
+);
+
+create table OrderDetails (
+    orderId integer not null,
+    medSupplyId integer not null,
+    count integer,
+    primary key (orderId, medSupplyId),
+    foreign key (orderId) references Orders (id),
+    foreign key (medSupplyId) references MedSupplies (id)
 );
 
 --store list of time slots for booking
@@ -62,8 +79,8 @@ insert into Professionals (fname, lname, location, specialty) values
 ('Edamame', 'Fig', 'Napier', 'General practice'),
 ('Grape', 'Hazelnut', 'Christchurch', 'Emergency medicine');
 
--- initialise medSupplies table values
-insert into medSupplies (name, description, image, price, _comment) values
+-- initialise MedSupplies table values
+insert into MedSupplies (name, description, image, price, _comment) values
 ("Blood Pressure Monitor", "Upper Arm Blood Pressure Monitor with Cuff that fits Standard and Large Arms", "BPMonitor.jpg", 80, "source: https://www.amazon.com/Omron-HEM-780-Automatic-Pressure-Monitor/dp/B0009XQUES"),
 ("Syringe and Needle", "Bag of 10 1cc 31g 5/16 inch", "SyringeAndNeedle.jpg", 10, "source: https://www.amazon.com/Bag-10-1cc-31g-inch/dp/B07CBPQ4YD/ref=sr_1_4?ie=UTF8&qid=1547840438&sr=8-4&keywords=syringe+with+needle"),
 ("Medical Gloves", "AMMEX - AINPF42100-BX - Medical Nitrile Gloves - Disposable, Powder Free, Exam Grade, 4 mil, Small, Indigo (Box of 100)", "Gloves.jpg", 15, "source: https://www.amazon.com/AMMEX-AINPF42100-BX-Medical-Nitrile-Disposable/dp/B00CF49QQI/ref=sr_1_2_sspa?ie=UTF8&qid=1547840647&sr=8-2-spons&keywords=medical+gloves&psc=1"),

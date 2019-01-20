@@ -1,6 +1,6 @@
 # book_and_shop_example
 
-A personal project that implements a booking management application and an online shopping application with the following functionalities:
+A personal project that implements a booking management application and a shopping cart application with the following functionalities:
 - user access management
 - user sign up and login via Google and Twitter (OAuth)
 - storing data via SQLite database
@@ -8,7 +8,7 @@ A personal project that implements a booking management application and an onlin
 - user error checking via browser and server checks
 - intuitive and user-friendly booking application interface assisted through ajax calls
 - creating, editing, deleting bookings with checks on avoiding duplicate bookings
-- (note: shopping application is still being constructed)
+- shopping cart application allowing online ordering of items
 
 implemented through the following:
 - HTML, CSS, Javascript

@@ -1,0 +1,40 @@
+<div class="page-header">
+    <h1>My Order History</h1>
+</div>
+{{#if orderSuccess}}
+<div class="alert alert-success alert-dismissable fade show" role="alert">
+    Your order was placed successfully. Thank you for shopping with us!
+    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{{/if}}
+{{#if orders}}
+{{#each orders}}
+<div class="card">
+    <h5 class="card-header bg-info">
+        Order - {{timestamp}}
+    </h5>
+    <div class="card-body">
+        <h4>Total order: ${{totalCost}}</h4>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Count</th>
+                    <th>Animal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each details}}
+                <tr>
+                    <td>{{count}}</td>
+                    <td>{{name}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+{{/each}} {{else}}
+<p>You have no orders with us. Please place your order through <a href="/shop">our store</a>.</p>
+{{/if}}

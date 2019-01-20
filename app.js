@@ -294,6 +294,67 @@ auth.post('/clearCart', function (req, res) {
     
 }, '/login?loginFirst=true');
 
+// route to order history page
+auth.get('/orderHistory', function (req, res) {
+
+    var cart = shoppingCart.getCart(req);
+
+    dao.getOrderHistoryFor(req.user.username, function (orderHistory) {
+
+        dao.getShoppingCartDetails(cart, function (cartDetails) {
+            var data = {
+                thisPage: "/orderHistory",
+                orderHistoryPage: true,
+                orderSuccess: req.query.orderSuccess,
+                cart: cartDetails,
+                username: req.user.username,
+                orders: orderHistory,
+                layout: "withShopCart"
+            };
+
+            res.render("orderHistory", data);
+        });
+
+    });
+
+}, '/login?loginFirst=true');
+
+// route to order checkout page
+auth.get("/checkout", function (req, res) {
+
+    var cart = shoppingCart.getCart(req);
+
+    dao.getNewOrderDetails(cart, function (newOrder) {
+        var data = {
+            thisPage: "/checkout",
+            checkoutPage: true,
+            cart: newOrder.orderDetails,
+            username: req.user.username,
+            order: newOrder,
+            layout: "withShopCart"
+        };
+
+        res.render("checkout", data);
+    });
+}, '/login?loginFirst=true');
+
+auth.post("/checkout", function (req, res) {
+
+    var cart = shoppingCart.getCart(req);
+
+    dao.getNewOrderDetails(cart, function (newOrder) {
+        dao.saveOrder(newOrder, req.user.username, function () {
+
+            shoppingCart.clearCart(req, res);
+
+            // Redirect to order history page.
+            res.redirect("/orderHistory?orderSuccess=true");
+        });
+    });
+
+}, '/login?loginFirst=true');
+
+
 // Serve files from "/public" folder
 app.use(express.static(__dirname + "/public"));
 

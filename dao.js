@@ -129,8 +129,8 @@ module.exports.deleteBooking = function (bookingId, callback) {
 
 //----------------------Queries relating to Shopping Functionalities---------------------------
 module.exports.getAllMedSupplies = function (callback) {
-    db.all("select * from medSupplies", function (err, rows) {
-        console.log(rows.length + " row(s) retrieved from medSupplies table.");
+    db.all("select * from MedSupplies", function (err, rows) {
+        console.log(rows.length + " row(s) retrieved from MedSupplies table.");
         callback(rows);
     });
 }
@@ -155,6 +155,90 @@ module.exports.getShoppingCartDetails = function (cart, callback) {
         }
 
         callback(cartDetails);
+
+    });
+};
+
+module.exports.getOrderHistoryFor = function (username, callback) {
+    db.all("select * from Orders WHERE username = ? order by timestamp desc", [username], function (err, orderRows) {
+
+        var orderHistoryMap = {};
+
+        for (var i = 0; i < orderRows.length; i++) {
+            orderHistoryMap[orderRows[i].id] = orderRows[i];
+        }
+
+        db.all("SELECT od.medSupplyId as 'medSupplyId', m.name as 'name', m.image as 'image', od.orderId as 'orderId', od.count as 'count' " +
+            "FROM Orders o, OrderDetails od, medSupplies m " +
+            "WHERE o.username = ? AND o.id = od.orderId AND m.id = od.medSupplyId", [username], function (err, orderDetailRows) {
+
+                if (err) {
+                    console.log(err);
+                }
+
+                for (var i = 0; i < orderDetailRows.length; i++) {
+                    var orderDetailRow = orderDetailRows[i];
+
+                    if (!orderHistoryMap[orderDetailRow.orderId].details) {
+                        orderHistoryMap[orderDetailRow.orderId].details = [];
+                    }
+
+                    orderHistoryMap[orderDetailRow.orderId].details.push({
+                        medSupplyId: orderDetailRow.medSupplyId,
+                        name: orderDetailRow.name,
+                        image: orderDetailRow.image,
+                        count: orderDetailRow.count
+                    });
+                }
+
+                callback(orderRows);
+
+            });
+    });
+}
+
+module.exports.getNewOrderDetails = function (cart, callback) {
+
+    module.exports.getShoppingCartDetails(cart, function (cartDetails) {
+
+        var totalCost = 0;
+        for (var i = 0; i < cartDetails.length; i++) {
+            totalCost += (cartDetails[i].count * cartDetails[i].price);
+        }
+
+        callback({
+            orderDetails: cartDetails,
+            totalCost: totalCost
+        });
+
+    });
+}
+
+module.exports.saveOrder = function (order, username, callback) {
+
+    var date = dateTime.create();
+    var timestamp = date.format("Y-m-d H:M");
+
+    db.run("INSERT INTO Orders (username, timestamp, totalCost) VALUES (?, ?, ?)", [username, timestamp, order.totalCost], function (err) {
+
+        var orderId = this.lastID;
+
+        // Everything in here will be run one after the other, without interfering with each other incorrectly.
+        db.serialize(function () {
+
+            db.run("BEGIN TRANSACTION");
+
+            for (var i = 0; i < order.orderDetails.length; i++) {
+                var orderLine = order.orderDetails[i];
+
+                db.run("INSERT INTO OrderDetails VALUES (?, ?, ?)", [orderId, orderLine.id, orderLine.count]);
+            }
+
+            db.run("COMMIT");
+
+        });
+
+        callback();
 
     });
 };

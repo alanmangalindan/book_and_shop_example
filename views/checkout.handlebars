@@ -1,0 +1,36 @@
+<div class="page-header">
+    <h1>Checkout</h1>
+    <p>Please double-check your order below before purchase.</p>
+</div>
+{{#with order}}
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">Order Details</h3>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Count</th>
+                    <th>Item Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each orderDetails}}
+                <tr>
+                    <td>{{count}}</td>
+                    <td>{{name}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        <h4 class="text-right">Total order: ${{totalCost}}</h4>
+        <form action="/checkout" method="POST">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Confirm Order</button>
+                <button formaction="/shop" formmethod="GET" type="submit" class="btn btn-default">Continue Shopping</button>
+            </div>
+        </form>
+    </div>
+</div>
+{{/with}}
