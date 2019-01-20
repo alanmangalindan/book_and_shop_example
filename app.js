@@ -33,6 +33,9 @@ var formidable = require("formidable");
 //import external DAO module which contains the database access statements
 var dao = require('./dao.js');
 
+// Custom module which handles shopping cart updates
+var shoppingCart = require('./shoppingCart.js');
+
 // Custom module for authentication
 var auth = require('./authentication.js');
 auth.initialize(app);
@@ -222,14 +225,40 @@ auth.post('/deleteBooking', function (req, res) {
 
 auth.get('/shop', function (req, res) {
 
-    dao.getAllMedSupplies(function(medSupplies) {
-        var data = {
-            userData: req.user,
-            medSupplies: medSupplies,
-            layout: "withShopCart"
-        }
-        res.render("shop", data);
-    })
+    var cart = shoppingCart.getCart(req);
+
+    dao.getAllMedSupplies(function (medSupplies) {
+
+        dao.getShoppingCartDetails(cart, function (cartDetails) {
+            var data = {
+                userData: req.user,
+                medSupplies: medSupplies,
+                cartMessage: req.query.CartMessage,
+                cart: cartDetails,
+                layout: "withShopCart"
+            }
+            res.render("shop", data);
+
+        });
+
+    });
+
+}, '/login?loginFirst=true');
+
+auth.post('/addToCart', function (req, res) {
+    // Get submitted form data
+    var num = parseInt(req.body.amount);
+    var medSupplyId = parseInt(req.body.medSupplyId);
+
+    if (num > 0) {
+        shoppingCart.addItemToCart(req, res, medSupplyId, num);
+    }
+
+    res.redirect("/shop?cartMessage=You added " + num + " items to your cart.");
+
+}, '/login?loginFirst=true');
+
+auth.post('/updateCart', function (req, res) {
 
 }, '/login?loginFirst=true');
 

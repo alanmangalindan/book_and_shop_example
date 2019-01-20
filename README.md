@@ -20,4 +20,6 @@ implemented through the following:
 
 Review book_and_shop_db-init.sql to initialise your database.
 
+Several pieces of code have been adapted from the CompSci719 course at the University of Auckland - October 2018
+
 for questions or comments: alan.nzph@gmail.com

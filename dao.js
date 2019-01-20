@@ -135,6 +135,30 @@ module.exports.getAllMedSupplies = function (callback) {
     });
 }
 
+module.exports.getShoppingCartDetails = function (cart, callback) {
+
+    module.exports.getAllMedSupplies(function (medSupplies) {
+
+        var cartDetails = [];
+
+        for (var i = 0; i < medSupplies.length; i++) {
+            var medItem = medSupplies[i];
+            if (cart[medItem.id]) {
+                cartDetails.push({
+                    id: medItem.id,
+                    name: medItem.name,
+                    image: medItem.image,
+                    price: medItem.price,
+                    count: cart[medItem.id]
+                });
+            }
+        }
+
+        callback(cartDetails);
+
+    });
+};
+
 // module.exports.updateUser = function (u, callback) {
 //     db.run("update Users set password = ?, dob = ?, country = ?, avatar = ?, fname = ?, lname = ?, activeFlag = ?, description = ? where username = ?", [u.password, u.dob, u.country, u.avatar, u.fname, u.lname, u.activeFlag, u.description, u.username], function (err) {
 //         if (err) {
