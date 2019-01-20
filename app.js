@@ -231,9 +231,10 @@ auth.get('/shop', function (req, res) {
 
         dao.getShoppingCartDetails(cart, function (cartDetails) {
             var data = {
+                thisPage: "/shop",
                 userData: req.user,
                 medSupplies: medSupplies,
-                cartMessage: req.query.CartMessage,
+                cartMessage: req.query.cartMessage,
                 cart: cartDetails,
                 layout: "withShopCart"
             }
