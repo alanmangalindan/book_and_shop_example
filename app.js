@@ -245,6 +245,7 @@ auth.get('/shop', function (req, res) {
 
 }, '/login?loginFirst=true');
 
+// add to cart functionality
 auth.post('/addToCart', function (req, res) {
     // Get submitted form data
     var num = parseInt(req.body.amount);
@@ -258,8 +259,38 @@ auth.post('/addToCart', function (req, res) {
 
 }, '/login?loginFirst=true');
 
+// update cart functionality
 auth.post('/updateCart', function (req, res) {
 
+    // Update it according to the submitted form data
+    var cartUpdateInfo = [];
+    for (var inputName in req.body) {
+        if (inputName.substring(0, 6) == "count-") {
+            var itemId = parseInt(inputName.substring(6));
+            var newCount = parseInt(req.body[inputName]);
+            cartUpdateInfo.push({
+                itemId: itemId,
+                count: newCount
+            });
+        }
+    }
+
+    // Update the cart itself
+    shoppingCart.setNumItemsInCart(req, res, cartUpdateInfo);
+
+    // Redirect to wherever the user just came from
+    res.redirect(req.body.thisPage + "?cartMessage=You have successfully updated your cart.");
+
+}, '/login?loginFirst=true');
+
+// clear cart contents functionality
+auth.post('/clearCart', function (req, res) {
+
+    shoppingCart.clearCart(req, res);
+
+    // Redirect to wherever the user just came from
+    res.redirect(req.body.thisPage + "?cartMessage=You successfully cleared your cart.");
+    
 }, '/login?loginFirst=true');
 
 // Serve files from "/public" folder

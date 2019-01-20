@@ -20,7 +20,7 @@ function saveCart(cart, req, res) {
 }
 
 // Deletes the shopping cart from cookies / sessions
-function deleteCart(res) {
+function deleteCart(req, res) {
     delete req.session.shoppingCart;
 }
 
@@ -58,7 +58,7 @@ module.exports.addItemToCart = function (req, res, itemId, count) {
 module.exports.setNumItemInCart = function (req, res, itemId, count) {
     var cart = loadCart(req);
     updateCart(cart, itemId, count);
-    saveCart(cart, res);
+    saveCart(cart, req, res);
 }
 
 module.exports.setNumItemsInCart = function (req, res, updateInfo) {
@@ -66,6 +66,6 @@ module.exports.setNumItemsInCart = function (req, res, updateInfo) {
     for (var i = 0; i < updateInfo.length; i++) {
         updateCart(cart, updateInfo[i].itemId, updateInfo[i].count);
     }
-    saveCart(cart, res);
+    saveCart(cart, req, res);
 };
 // --------------------------------------------------------------------------
