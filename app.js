@@ -66,7 +66,8 @@ app.get('/', function (req, res) {
     } else {
 
         var data = {
-            loggedOut: req.query.loggedOut
+            loggedOut: req.query.loggedOut,
+            accountUpdated: req.query.accountUpdated
         }
 
         res.render('home', data);
@@ -143,6 +144,32 @@ auth.get('/userDetails', function (req, res) {
         res.render('userDetails', data);
     });
 }, '/login?loginFirst=true');
+
+// update user details
+auth.post('/updateUser', function (req, res) {
+
+    var user = {
+        fname: req.body.fname,
+        lname: req.body.lname,
+        activeFlag: req.body.activeFlag,
+        username: req.user.username
+    }
+
+    dao.updateUser(user, function () {
+        res.redirect('/?accountUpdated=true');
+    });
+
+}, '/login?loginFirst=true');
+
+// set user as inactive = delete User
+app.post('/deleteUser', function (req, res) {
+
+    dao.deleteUser(req.user.username, function () {
+        req.logout();
+        res.redirect("/?userDeleted=true");
+    });
+
+});
 
 // booking page
 auth.get('/book', function (req, res) {
