@@ -37,6 +37,17 @@ module.exports.createUser = function (u, callback) {
 
 }
 
+module.exports.updateUser = function (u, callback) {
+    db.run("update Users set fname = ?, lname = ?, activeFlag = ? where username = ?", [u.fname, u.lname, u.activeFlag, u.username], function (err) {
+        if (err) {
+            console.log(err);
+        }
+        console.log(this.changes + " row(s) affected in Users table.");
+        callback();
+    });
+
+}
+
 //----------------------Queries relating to Professionals---------------------------
 module.exports.getAllProfessionals = function (callback) {
     db.all("select * from Professionals", function (err, rows) {
@@ -62,6 +73,15 @@ module.exports.getProfDetails = function (id, callback) {
     });
 }
 
+module.exports.deleteUser = function (username, callback) {
+    db.run("update Users set activeFlag = 0 where username = ?", [username], function (err) {
+        if (err) {
+            console.log(err);
+        }
+        console.log(this.changes + " row(s) affected in Users table.");
+        callback();
+    });
+}
 
 //----------------------Queries relating to Bookings---------------------------
 module.exports.getTimeSelection = function (callback) {
@@ -243,17 +263,6 @@ module.exports.saveOrder = function (order, username, callback) {
     });
 };
 
-// module.exports.updateUser = function (u, callback) {
-//     db.run("update Users set password = ?, dob = ?, country = ?, avatar = ?, fname = ?, lname = ?, activeFlag = ?, description = ? where username = ?", [u.password, u.dob, u.country, u.avatar, u.fname, u.lname, u.activeFlag, u.description, u.username], function (err) {
-//         if (err) {
-//             console.log(err);
-//         }
-//         console.log(this.changes + " row(s) affected in Users table.");
-//         callback();
-//     });
-
-// }
-
 // module.exports.getAllUsernames = function (callback) {
 //     db.all("select username from Users", function (err, rows) {
 //         if (rows.length > 0) {
@@ -264,12 +273,3 @@ module.exports.saveOrder = function (order, username, callback) {
 //     });
 // }
 
-// module.exports.deleteUser = function (u, callback) {
-//     db.run("update Users set activeFlag = 0 where username = ?", [u], function (err) {
-//         if (err) {
-//             console.log(err);
-//         }
-//         console.log(this.changes + " row(s) affected in Users table.");
-//         callback();
-//     });
-// }
