@@ -58,7 +58,8 @@ app.get('/', function (req, res) {
 
         dao.getUser(req.user.username, function (user) {
             var data = {
-                userData: user
+                userData: user,
+                accountUpdated: req.query.accountUpdated
             }
             res.render('home', data);
         });
@@ -67,7 +68,8 @@ app.get('/', function (req, res) {
 
         var data = {
             loggedOut: req.query.loggedOut,
-            accountUpdated: req.query.accountUpdated
+            accountUpdated: req.query.accountUpdated,
+            userDeleted: req.query.userDeleted
         }
 
         res.render('home', data);
@@ -336,6 +338,7 @@ auth.get('/orderHistory', function (req, res) {
                 cart: cartDetails,
                 username: req.user.username,
                 orders: orderHistory,
+                userData: req.user,
                 layout: "withShopCart"
             };
 
